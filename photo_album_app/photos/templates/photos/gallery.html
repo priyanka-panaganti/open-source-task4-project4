@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <style>
+        .image-thumbail {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .list-group-item a {
+            text-decoration: none;
+            color: black;
+        }
+        
+        .dd {
+  z-index:1;
+  position:relative;
+  display: inline-block;
+}
+.dd-a {
+  padding:10px;
+  background:white;
+  position:relative;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+}
+.dd input:after {
+  content:"";
+  width:100%;
+  height:2px;
+  position:absolute;
+  display:block;
+  background:#C63D0F;
+  bottom:0;
+  left:0;
+  transform: scaleX(0);
+  transform-origin: bottom left;
+  transition-duration: 0.2s;
+  -webkit-transform: scaleX(0);
+  -webkit-transform-origin: bottom left;
+  -webkit-transition-duration: 0.2s;
+}
+.dd input {
+  top:0;
+  opacity:0;
+  display:block;
+  padding:0;
+  margin:0;
+  border:0;
+  position:absolute;
+  height:100%;
+  width:100%;
+}
+.dd input:hover {
+  cursor:pointer;
+}
+.dd input:hover ~ .dd-a {
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+}
+.dd input:checked:after {
+  transform: scaleX(1);
+  -webkit-transform: scaleX(1);
+}
+.dd input:checked ~ .dd-c {
+  transform: scaleY(1);
+  -webkit-transform: scaleY(1);
+}
+.dd-a span {
+  color:#C63D0F;
+}
+.dd-c{
+  display:block;
+  position: absolute;
+  background:white;
+  height:auto;
+  transform: scaleY(0);
+  transform-origin: top left;
+  transition-duration: 0.2s;
+  -webkit-transform: scaleY(0);
+  -webkit-transform-origin: top left;
+  -webkit-transition-duration: 0.2s;
+}
+.dd-c ul {
+  margin:0;
+  padding:0;
+  list-style-type: none;
+}
+.dd-c li {
+ 
+  word-break: keep-all;
+  white-space:nowrap;
+  display:block;
+  position:relative;
+}
+a {
+  display:block;
+  position:relative;
+  text-decoration: none;
+  padding:5px;
+  
+  color:#C63D0F;
+}
+    </style>
+</head>
+
+<body class="m-5">
+    <nav class="navbar navbar-expand-lg fixed-top  navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand " > 
+               {% if request.user.is_authenticated %}
+            <p>Hello {{request.user}}</p>
+            {% endif %}</a>
+         
+            
+ <div class="collapse navbar-collapse navbar-dark bg-dark" id="navbarNavDropdown">
+            <ul class="navbar-nav ">
+               
+               
+              <li class="nav-item dropdown">
+                <div class="dd">
+                    <div class="dd-a"><span>Categories</span></div>
+                    <input type="checkbox">
+                    <div class="dd-c">
+                      <ul>
+                        <li><span> <a href="{% url 'gallery' %}">All</a></span></li>
+                        {% for category in categories %}
+                        <li><span> <a href="{% url 'gallery' %}?category={{category.name}}">
+                            {{category.name}}
+                        </a></span></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+              </li>
+            </ul>
+
+            <a href="{% url 'add' %}" class="btn btn-outline-light btn-block btn-sm m-1">Add Photo</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-block btn-sm m-1">Logout</a>
+
+           
+          </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-md-12">
+                <div class="row">
+
+                    {% for photo in photos %}
+                    <div class="col-md-4">
+                        <div class="card my-xxl-5">
+                            <img class="image-thumbail" src="{{photo.image.url}}" alt="Card image cap">
+
+                            <div class="card-body">
+                                <small>Category: {{photo.category.name}}</small>
+                            </div>
+                            <a href="{% url 'photo' photo.id %}" class="btn btn-outline-dark btn-sm m-1">View Description</a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <h3>No photos...</h3>
+                    {% endfor %}
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
